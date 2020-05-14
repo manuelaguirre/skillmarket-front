@@ -5,29 +5,25 @@
 			<img src="../assets/mock/img/profilepic.jpeg" alt="" srcset="">
 		</div>
 		<div id="name" class="text-3xl font-bold">
-			<h1>Julián Mateu</h1>
+			<h1>{{ userData.name }}</h1>
 		</div>
-		<div id="bio">Capo Total</div>
+		<div id="bio">{{ userData.bio }}</div>
 	</div>
 	<div id="dashboard-container" class="">
 		<div id="expertises-container" class="">
 			<h2 class="text-lg">Expertise</h2>
 			<ul class="m-2">
-				<li>Node</li>
-				<li>Math</li>
-				<li>Piano</li>
-				<li>Meditation</li>
-				<li>Java</li>
+				<li v-for="item in userData.expertise" :key="item.name">
+					{{ item.name }}
+				</li>
 			</ul>
 		</div>
 		<div id="skillwishes-container">
 			<h2 class="text-lg">Wants to learn:</h2>
 			<ul class="m-2">
-				<li>Javascript</li>
-				<li>Astrology</li>
-				<li>Carpentry</li>
-				<li>Judaism</li>
-				<li>German</li>
+				<li v-for="item in userData.interests" :key="item.name">
+					{{ item.name }}
+				</li>
 			</ul>
 		</div>
 	</div>
@@ -36,8 +32,37 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
-		
+    name:'Profile',
+    props:{},
+    data() {
+        return {
+            userData: {
+                username: '',
+                name:'pipi',
+                bio:'',
+                email:'',
+                geo: {
+                    lat:	'-37.3159',
+                    lng:	'81.1496'
+                },
+                radius: null,
+                interests: [],
+                expertise: undefined,
+                availability: null,
+            },
+        };
+    },
+    created () {
+        axios.get('https://my-json-server.typicode.com/manuelaguirre/my-json/users')
+            .then(response => this.displayUser(response.data));
+    },
+    methods: {
+        displayUser(user) {
+            this.userData = {...user};
+        }
+    },
 };
 </script>
 
