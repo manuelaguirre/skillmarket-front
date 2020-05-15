@@ -2,7 +2,7 @@
 <div id="profile-container" class="flex">
 	<div id="info-wrapper" class="w-1/3">
 		<div id="image-container" class="rounded-md overflow-hidden w-48 mx-auto mb-2">
-			<img src="../assets/mock/img/profilepic.jpeg" alt="" srcset="">
+			<img :src="userData.img" alt="" srcset="">
 		</div>
 		<div id="name" class="text-3xl font-bold">
 			<h1>{{ userData.name }}</h1>
@@ -11,7 +11,7 @@
 	</div>
 	<div id="dashboard-container" class="">
 		<div id="expertises-container" class="">
-			<h2 class="text-lg">Expertise</h2>
+			<h2 class="text-lg font-bold">Expertise</h2>
 			<ul class="m-2">
 				<li v-for="item in userData.expertise" :key="item.name">
 					{{ item.name }}
@@ -19,7 +19,7 @@
 			</ul>
 		</div>
 		<div id="skillwishes-container">
-			<h2 class="text-lg">Wants to learn:</h2>
+			<h2 class="text-lg font-bold">Wants to learn:</h2>
 			<ul class="m-2">
 				<li v-for="item in userData.interests" :key="item.name">
 					{{ item.name }}
@@ -52,14 +52,20 @@ export default {
                 expertise: undefined,
                 availability: null,
             },
+            userId: this.$route.params.id
         };
     },
     created () {
-        axios.get('https://my-json-server.typicode.com/manuelaguirre/my-json/users')
-            .then(response => this.displayUser(response.data));
+        this.displayUser(this.userId);
     },
     methods: {
-        displayUser(user) {
+        async getUser(id) {
+            const result = await axios.get(`https://my-json-server.typicode.com/manuelaguirre/my-json/users/${id}`)
+                .then(res => res.data);            
+            return result;
+        },
+        async displayUser(id) {
+            const user = await this.getUser(id);
             this.userData = {...user};
         }
     },
