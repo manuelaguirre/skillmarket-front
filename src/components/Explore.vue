@@ -1,5 +1,5 @@
 <template>
-    <div class="flex">
+    <div class="md:flex">
         <UserSummaryCard v-for="item in cardData" :key="item.id" class="m-4"
         :img="item.img" :name="item.name" :number="item.number">
             
