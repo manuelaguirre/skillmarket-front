@@ -28,6 +28,12 @@
                         v-model="email"
                         placeholder="Email"/>
 
+                <DatePicker v-model="birthDate"
+                        :max-date="maxDate"
+                         :input-props='{
+    class: "block border border-grey-light w-full p-3 rounded mb-4",
+    readonly: true
+  }'/>
                 <input
                         type="password"
                         required
@@ -76,18 +82,41 @@
 
 <script>
 import axios from 'axios';
+import {DatePicker} from 'v-calendar';
 
 export default {
     name: 'SignUp',
+    components: {
+        DatePicker,
+    },
     props: {},
     data() {
         return {
             errors: [],
             name: null,
             email: null,
+            birthDate:null,
             password: null,
-            passwordConfirmation: null
+            passwordConfirmation: null,
+            maxDate: new Date()
         };
+    },
+    computed: {
+        formattedBirthDate() 
+        {
+            var d = this.birthDate,
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) 
+                month = '0' + month;
+            if (day.length < 2) 
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+        
     },
     methods: {
         validatePassword() {
@@ -107,6 +136,7 @@ export default {
             const response = await axios.post('http://localhost:3000/register', {
                 name: this.fullName,
                 email: this.email,
+                birthDate: this.formattedBirthDate,
                 password: this.password,
                 passwordConfirmation: this.passwordConfirmation,
             });
