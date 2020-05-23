@@ -5,6 +5,7 @@ import Profile from '@/components/Profile.vue';
 import SignUp from '@/components/SignUp.vue';
 import LogIn from '@/components/LogIn.vue';
 import Explore from '@/components/Explore.vue';
+import Match from '@/components/Match.vue';
 
 Vue.use(VueRouter);
 
@@ -15,9 +16,14 @@ const routes = [
         component: Home
     },
     {
-        path: '/users/:id',
+        path: '/profile',
         name: 'User Profile Page',
         component: Profile,
+    },
+    {
+        path: '/Match',
+        name: 'Match Page',
+        component: Match,
     },
     {
         path: '/signup',

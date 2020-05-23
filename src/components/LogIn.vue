@@ -1,7 +1,6 @@
 <template>
     <div class="min-h-screen bg-gray-300 flex flex-col">
         <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
-            <!-- TODO: don't hardcode URLS, and use HTTPS-->
             <form
                     @submit="logIn"
                     class="bg-white px-6 py-8 rounded shadow-md text-black w-full"
@@ -51,12 +50,17 @@ export default {
     methods: {
         async logIn(e) {
             e.preventDefault();
-            const result = await axios.post('http://localhost:3000/login', {
+            // TODO: don't hardcode URLS, and use HTTPS
+            const response = await axios.post('http://localhost:3000/login', {
                 email: this.email,
                 password: this.password,
-            })
-                .then(console.log);
-            return result;
+            });
+
+            const {status} = response;
+
+            if (status === 200) {
+                await this.$router.push('/profile');
+            }
         },
     },
 };
