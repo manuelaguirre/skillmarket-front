@@ -2,7 +2,7 @@
     <div class="min-h-screen bg-gray-300 flex flex-col">
         <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
             <form
-                    @submit="signUp"
+                    @submit.prevent="signUp"
                     class="bg-white px-6 py-8 rounded shadow-md w-full"
             >
                 <h1 class="mb-8 text-3xl text-center">Sign up</h1>
@@ -28,12 +28,76 @@
                         v-model="email"
                         placeholder="Email"/>
 
-                <DatePicker v-model="birthDate"
-                        :max-date="maxDate"
-                         :input-props='{
-    class: "block border border-grey-light w-full p-3 rounded mb-4",
-    readonly: true
-  }'/>
+                <input
+                        onfocus="(this.type='date')"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="birthdate"
+                        required
+                        v-model="birthDate"
+                        v-bind:max="maxDate"
+                        placeholder="Birth Date"/>
+
+                <input
+                        type="text"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="interests"
+                        required
+                        v-model="interestsField"
+                        @keyup="processInterests"
+                        placeholder="Interests"/>
+
+                <input
+                        type="text"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="expertises"
+                        required
+                        v-model="expertisesField"
+                        @keyup="processExpertises"
+                        placeholder="Expertises"/>
+
+                <input
+                        type="text"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="imageUrl"
+                        v-model="imageUrl"
+                        placeholder="Profile pic URL"/>
+
+                <input
+                        type="text"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="bio"
+                        v-model="bio"
+                        placeholder="Bio"/>
+
+                <label>
+                    <div class="flex flex-row mb-2">
+                        <div class="w-1/2">Location</div>
+                        <button class="button w-1/2 inline-block text-sm px-4 py-2 leading-none border rounded" @click="getPosition">
+                            Get
+                        </button>
+                    </div>
+                    <div v-if="gettingLocation" class="bg-yellow-200 mb-2 rounded">
+                        Processing...
+                    </div>
+                    <div class="flex flex-row">
+                        <input
+                                type="text"
+                                class="block border border-grey-light w-1/2 p-3 rounded mb-4"
+                                name="latitude"
+                                required
+                                v-model="location.latitude"
+                                placeholder="Latitude"/>
+
+                        <input
+                                type="text"
+                                class="block border border-grey-light w-1/2 p-3 rounded mb-4"
+                                name="longitude"
+                                required
+                                v-model="location.longitude"
+                                placeholder="Longitude"/>
+                    </div>
+                </label>
+
                 <input
                         type="password"
                         required
@@ -52,6 +116,7 @@
                         pattern="^(?=.*?[\p{Lu}])(?=.*?[\p{Ll}])(?=.*?\d).{8,}$"
                         title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
                         placeholder="Confirm Password"/>
+
 
                 <button
                         type="submit"
@@ -82,41 +147,31 @@
 
 <script>
 import axios from 'axios';
-import {DatePicker} from 'v-calendar';
 
 export default {
     name: 'SignUp',
-    components: {
-        DatePicker,
-    },
     props: {},
     data() {
         return {
             errors: [],
-            name: null,
+            fullName: null,
             email: null,
-            birthDate:null,
+            birthDate: null,
             password: null,
+            interestsField: null,
+            imageUrl: null,
+            interests: [],
+            expertisesField: null,
+            expertises: [],
             passwordConfirmation: null,
-            maxDate: new Date()
+            maxDate: new Date(),
+            bio: null,
+            gettingLocation: false,
+            location: {
+                latitude: null,
+                longitude: null,
+            },
         };
-    },
-    computed: {
-        formattedBirthDate() 
-        {
-            var d = this.birthDate,
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) 
-                month = '0' + month;
-            if (day.length < 2) 
-                day = '0' + day;
-
-            return [year, month, day].join('-');
-        }
-        
     },
     methods: {
         validatePassword() {
@@ -124,10 +179,30 @@ export default {
                 this.errors = ['Passwords do not match'];
                 return false;
             }
+            this.errors = [];
             return true;
         },
-        async signUp(e) {
-            e.preventDefault();
+        processInterests() {
+            this.interests = this.interestsField ? this.interestsField.split(',') : [];
+        },
+        processExpertises() {
+            this.expertises = this.expertisesField ? this.expertisesField.split(',') : [];
+        },
+        setPosition(position) {
+            console.log(position);
+            const {latitude, longitude} = position.coords;
+            this.location = {latitude, longitude};
+            this.gettingLocation = false;
+        },
+        getPosition() {
+            if (!navigator.geolocation) {
+                console.log('Geolocation is not supported by your browser');
+            } else {
+                this.gettingLocation = true;
+                navigator.geolocation.getCurrentPosition(this.setPosition, console.log);
+            }
+        },
+        async signUp() {
             if (!this.validatePassword()) {
                 return;
             }
@@ -136,9 +211,14 @@ export default {
             const response = await axios.post('http://localhost:3000/register', {
                 name: this.fullName,
                 email: this.email,
-                birthDate: this.formattedBirthDate,
+                birthDate: this.birthDate,
+                interests: this.interests,
+                expertises: this.expertises,
                 password: this.password,
                 passwordConfirmation: this.passwordConfirmation,
+                location: this.location,
+                imageUrl: this.imageUrl,
+                bio: this.bio,
             });
 
             const {status} = response;

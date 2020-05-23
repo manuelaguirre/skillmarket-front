@@ -2,7 +2,7 @@
     <div class="min-h-screen bg-gray-300 flex flex-col">
         <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
             <form
-                    @submit="logIn"
+                    @submit.prevent="logIn"
                     class="bg-white px-6 py-8 rounded shadow-md text-black w-full"
             >
                 <h1 class="mb-8 text-3xl text-center">Log In</h1>
@@ -48,8 +48,7 @@ export default {
     name:'LogIn',
     props:{},
     methods: {
-        async logIn(e) {
-            e.preventDefault();
+        async logIn() {
             // TODO: don't hardcode URLS, and use HTTPS
             const response = await axios.post('http://localhost:3000/login', {
                 email: this.email,
