@@ -2,7 +2,7 @@
 <div id="profile-container" class="flex">
 	<div id="info-wrapper" class="w-1/3">
 		<div id="image-container" class="rounded-md overflow-hidden w-48 mx-auto mb-2">
-			<img :src="userData.img" alt="" srcset="">
+			<img :src="userData.imageUrl" alt="" srcset="">
 		</div>
 		<div id="name" class="text-3xl font-bold">
 			<h1>{{ userData.name }}</h1>
@@ -13,16 +13,16 @@
 		<div id="expertises-container" class="">
 			<h2 class="text-lg font-bold">Expertise</h2>
 			<ul class="m-2">
-				<li v-for="item in userData.expertise" :key="item.name">
-					{{ item.name }}
+				<li v-for="item in userData.expertises" :key="item">
+					{{ item }}
 				</li>
 			</ul>
 		</div>
 		<div id="skillwishes-container">
 			<h2 class="text-lg font-bold">Wants to learn:</h2>
 			<ul class="m-2">
-				<li v-for="item in userData.interests" :key="item.name">
-					{{ item.name }}
+				<li v-for="item in userData.interests" :key="item">
+					{{ item }}
 				</li>
 			</ul>
 		</div>
@@ -39,33 +39,33 @@ export default {
     data() {
         return {
             userData: {
-                username: '',
                 name:'pipi',
+                birthDate: '',
                 bio:'',
                 email:'',
-                geo: {
-                    lat:	'-37.3159',
-                    lng:	'81.1496'
+                location: {
+                    latitude:	'-37.3159',
+                    longitude:	'81.1496'
                 },
-                radius: null,
                 interests: [],
-                expertise: undefined,
-                availability: null,
+                expertises: undefined,
+                imageUrl: undefined,
             },
             userId: this.$route.params.id
         };
     },
     created () {
-        this.displayUser(this.userId);
+        this.displayUser();
     },
     methods: {
-        async getUser(id) {
-            const result = await axios.get(`https://my-json-server.typicode.com/manuelaguirre/my-json/users/${id}`)
-                .then(res => res.data);            
-            return result;
+        async getUser() {
+            const response = await axios.get('http://localhost:3000/users/profile', {
+                credentials: 'include',
+            });
+            return response.data;
         },
-        async displayUser(id) {
-            const user = await this.getUser(id);
+        async displayUser() {
+            const user = await this.getUser();
             this.userData = {...user};
         }
     },

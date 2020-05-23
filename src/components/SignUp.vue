@@ -1,60 +1,153 @@
 <template>
-		<div class="min-h-screen bg-gray-300 flex flex-col">
-            <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
-                <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
-                    <h1 class="mb-8 text-3xl text-center">Sign up</h1>
-                    <input 
+    <div class="min-h-screen bg-gray-300 flex flex-col">
+        <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
+            <form
+                    @submit="signUp"
+                    class="bg-white px-6 py-8 rounded shadow-md w-full"
+            >
+                <h1 class="mb-8 text-3xl text-center">Sign up</h1>
+                <div v-if="errors.length" class="bg-red-200 p-3 mb-4 rounded-md">
+                    <b>Please correct the following error(s):</b>
+                    <ul>
+                        <li v-for="error in errors" :key="error">{{ error }}</li>
+                    </ul>
+                </div>
+                <input
                         type="text"
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="fullname"
-                        placeholder="Full Name" />
+                        required
+                        v-model="fullName"
+                        placeholder="Full Name"/>
 
-                    <input 
-                        type="text"
+                <input
+                        type="email"
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="email"
-                        placeholder="Email" />
+                        required
+                        v-model="email"
+                        placeholder="Email"/>
 
-                    <input 
+                <DatePicker v-model="birthDate"
+                        :max-date="maxDate"
+                         :input-props='{
+    class: "block border border-grey-light w-full p-3 rounded mb-4",
+    readonly: true
+  }'/>
+                <input
                         type="password"
+                        required
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="password"
-                        placeholder="Password" />
-                    <input 
+                        v-model="password"
+                        pattern="^(?=.*?[\p{Lu}])(?=.*?[\p{Ll}])(?=.*?\d).{8,}$"
+                        title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                        placeholder="Password"/>
+                <input
                         type="password"
+                        required
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="confirm_password"
-                        placeholder="Confirm Password" />
+                        v-model="passwordConfirmation"
+                        pattern="^(?=.*?[\p{Lu}])(?=.*?[\p{Ll}])(?=.*?\d).{8,}$"
+                        title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                        placeholder="Confirm Password"/>
 
-                    <button
+                <button
                         type="submit"
                         class="w-full text-center py-3 rounded bg-green-300 text-white hover:bg-green-dark focus:outline-none my-1"
-                    >Create Account</button>
+                >Create Account
+                </button>
 
-                    <div class="text-center text-sm text-grey-dark mt-4">
-                        By signing up, you agree to the 
-                        <a class="no-underline border-b border-grey-dark text-grey-dark" href="#">
-                            Terms of Service
-                        </a> and 
-                        <a class="no-underline border-b border-grey-dark text-grey-dark" href="#">
-                            Privacy Policy
-                        </a>
-                    </div>
+                <div class="text-center text-sm text-grey-dark mt-4">
+                    By signing up, you agree to the
+                    <a class="no-underline border-b border-grey-dark text-grey-dark" href="#/toc">
+                        Terms of Service
+                    </a> and
+                    <a class="no-underline border-b border-grey-dark text-grey-dark" href="#/privacy">
+                        Privacy Policy
+                    </a>
                 </div>
+            </form>
 
-                <div class="text-grey-dark mt-6">
-                    Already have an account? 
-                    <a class="no-underline border-b border-blue text-blue" href="../login/">
-                        Log in
-                    </a>.
-                </div>
+            <div class="text-grey-dark mt-6">
+                Already have an account?
+                <a class="no-underline border-b border-blue text-blue" href="#/login">
+                    Log in
+                </a>.
             </div>
         </div>
+    </div>
 </template>
 
 <script>
+import axios from 'axios';
+import {DatePicker} from 'v-calendar';
+
 export default {
-				
+    name: 'SignUp',
+    components: {
+        DatePicker,
+    },
+    props: {},
+    data() {
+        return {
+            errors: [],
+            name: null,
+            email: null,
+            birthDate:null,
+            password: null,
+            passwordConfirmation: null,
+            maxDate: new Date()
+        };
+    },
+    computed: {
+        formattedBirthDate() 
+        {
+            var d = this.birthDate,
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) 
+                month = '0' + month;
+            if (day.length < 2) 
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+        
+    },
+    methods: {
+        validatePassword() {
+            if (this.password !== this.passwordConfirmation) {
+                this.errors = ['Passwords do not match'];
+                return false;
+            }
+            return true;
+        },
+        async signUp(e) {
+            e.preventDefault();
+            if (!this.validatePassword()) {
+                return;
+            }
+
+            // TODO: don't hardcode URLS, and use HTTPS
+            const response = await axios.post('http://localhost:3000/register', {
+                name: this.fullName,
+                email: this.email,
+                birthDate: this.formattedBirthDate,
+                password: this.password,
+                passwordConfirmation: this.passwordConfirmation,
+            });
+
+            const {status} = response;
+
+            if (status === 200) {
+                await this.$router.push('/profile');
+            }
+        },
+    },
 };
 </script>
 
