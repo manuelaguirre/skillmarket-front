@@ -43,23 +43,19 @@
 </template>
 
 <script>
-import axios from 'axios';
 export default {
     name:'LogIn',
     props:{},
     methods: {
         async logIn() {
-            // TODO: don't hardcode URLS, and use HTTPS
-            const response = await axios.post('http://localhost:3000/login', {
+
+            const data = {
                 email: this.email,
                 password: this.password,
-            });
+            };
 
-            const {status} = response;
-
-            if (status === 200) {
-                await this.$router.push('/profile');
-            }
+            await this.$store.dispatch('login', data);
+            await this.$router.push('/');
         },
     },
 };

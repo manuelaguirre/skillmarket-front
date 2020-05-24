@@ -146,8 +146,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
     name: 'SignUp',
     props: {},
@@ -207,8 +205,7 @@ export default {
                 return;
             }
 
-            // TODO: don't hardcode URLS, and use HTTPS
-            const response = await axios.post('http://localhost:3000/register', {
+            const data = {
                 name: this.fullName,
                 email: this.email,
                 birthDate: this.birthDate,
@@ -219,13 +216,10 @@ export default {
                 location: this.location,
                 imageUrl: this.imageUrl,
                 bio: this.bio,
-            });
+            };
 
-            const {status} = response;
-
-            if (status === 200) {
-                await this.$router.push('/profile');
-            }
+            await this.$store.dispatch('register', data);
+            await this.$router.push('/profile');
         },
     },
 };

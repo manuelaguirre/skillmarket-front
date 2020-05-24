@@ -15,21 +15,25 @@
                         Home
                     </router-link>
                     <router-link
+                            v-if="!isLoggedIn"
                             to="/signup"
                             class="block mt-4 sm:inline-block sm:mt-0 text-teal-200 hover:text-white mr-4">
                         Sign Up
                     </router-link>
                     <router-link
+                            v-if="isLoggedIn"
                             to="/profile"
                             class="block mt-4 sm:inline-block sm:mt-0 text-teal-200 hover:text-white mr-4">
                         Profile
                     </router-link>
                     <router-link
+                            v-if="isLoggedIn"
                             to="/explore"
                             class="block mt-4 sm:inline-block sm:mt-0 text-teal-200 hover:text-white mr-4">
                         Explore
                     </router-link>
                     <router-link
+                            v-if="isLoggedIn"
                             to="/match"
                             class="block mt-4 sm:inline-block sm:mt-0 text-teal-200 hover:text-white mr-4">
                         Match
@@ -37,11 +41,13 @@
                 </div>
                 <div>
                     <router-link
+                            v-if="!isLoggedIn"
                             to="/login"
                             class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-blue-500 hover:bg-white mt-4 md:mt-0 mr-2">
                         Log In
                     </router-link>
                     <button
+                            v-else
                             @click="logOut"
                             class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-blue-500 hover:bg-white mt-4 ml-2 md:mt-0 mr-6">
                         Log Out
@@ -59,22 +65,18 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
     name: 'App',
     props: {},
+    computed : {
+        isLoggedIn() {
+            return this.$store.getters.isLoggedIn;
+        },
+    },
     methods: {
         async logOut() {
-
-            // TODO: don't hardcode URLS, and use HTTPS
-            const response = await axios.post('http://localhost:3000/logout');
-
-            const {status} = response;
-
-            if (status === 200) {
-                await this.$router.push('/');
-            }
+            await this.$store.dispatch('logout');
+            await this.$router.push('/login');
         },
     },
 };
