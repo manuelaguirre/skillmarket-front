@@ -2,12 +2,14 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 
+const LOGGED_IN_TOKEN_KEY = 'loggedInToken';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
         status: '',
-        token: localStorage.getItem('token') || '',
+        token: localStorage.getItem(LOGGED_IN_TOKEN_KEY) || '',
     },
     mutations: {
         auth_request(state) {
@@ -23,6 +25,7 @@ export default new Vuex.Store({
         logout(state) {
             state.status = '';
             state.token = '';
+            state.user = {};
         },
     },
     actions: {
@@ -36,11 +39,11 @@ export default new Vuex.Store({
 
             if (status === 200) {
                 const token = 'loggedIn';
-                localStorage.setItem('loggedInToken', token);
+                localStorage.setItem(LOGGED_IN_TOKEN_KEY, token);
                 commit('auth_success', token);
             } else {
                 commit('auth_error');
-                localStorage.removeItem('token');
+                localStorage.removeItem(LOGGED_IN_TOKEN_KEY);
             }
         },
         async register({commit}, user) {
@@ -53,11 +56,11 @@ export default new Vuex.Store({
 
             if (status === 200) {
                 const token = 'loggedIn';
-                localStorage.setItem('token', token);
+                localStorage.setItem(LOGGED_IN_TOKEN_KEY, token);
                 commit('auth_success', token);
             } else {
                 commit('auth_error');
-                localStorage.removeItem('token');
+                localStorage.removeItem(LOGGED_IN_TOKEN_KEY);
             }
         },
         async logout({commit}) {
@@ -68,10 +71,10 @@ export default new Vuex.Store({
 
             if (status === 200) {
                 commit('logout');
-                localStorage.removeItem('token');
+                localStorage.removeItem(LOGGED_IN_TOKEN_KEY);
             } else {
                 commit('auth_error');
-                localStorage.removeItem('token');
+                localStorage.removeItem(LOGGED_IN_TOKEN_KEY);
             }
         },
     },

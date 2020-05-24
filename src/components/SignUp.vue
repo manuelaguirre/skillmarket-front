@@ -51,7 +51,7 @@
                 </label>
 
                 <label>
-                    Interests (comma separated)
+                    Expertises (comma separated)
                     <input
                             type="text"
                             class="block border border-grey-light w-full p-3 rounded mb-4"

@@ -11,12 +11,14 @@
                         type="email"
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="email"
+                        autocomplete="email"
                         v-model="email"
                         required
                         placeholder="Email"/>
 
                 <input
                         type="password"
+                        autocomplete="current-password"
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="password"
                         v-model="password"
@@ -46,6 +48,12 @@
 export default {
     name:'LogIn',
     props:{},
+    data() {
+        return {
+            email: null,
+            password: null,
+        };
+    },
     methods: {
         async logIn() {
 
