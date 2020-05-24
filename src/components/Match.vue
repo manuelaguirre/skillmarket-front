@@ -2,7 +2,10 @@
     <div class="flex flex-column">
         <div class="flex content-around w-1/2 flex-wrap p-6">
             <div class="w-64 p-2" v-for="userData in matchesData" :key="userData.id">
-                <div id="profile-container" class="max-w-sm rounded overflow-hidden shadow-lg h-full ">
+                <div id="profile-container" class="max-w-sm rounded overflow-hidden shadow-lg h-full "
+                    :class="{ selected: userData.isSelected }"
+                    @click.prevent="clickHandler"
+                    :data-userid="userData.id">
                     <div id="image-container" class="rounded-md overflow-hidden w-full mx-auto mb-2">
                         <img :src="userData.imageUrl" alt="" srcset="">
                     </div>
@@ -76,6 +79,9 @@ export default {
             const response = await axios.get('http://localhost:3000/users/match/20000', {
                 credentials: 'include',
             });
+            response.data.forEach(element => {
+                element.isSelected = false;
+            });
             return response.data;
         },
         async displayMatches() {
@@ -90,11 +96,38 @@ export default {
             this.mainLocation = {lat:51.5, lng: 0};
             this.selectedLocation = {lat:51.55, lng: -0.0012};
             console.log('Match.vue updating data');
+        },
+        clickHandler(event) {
+            const userID = event.currentTarget.dataset.userid;
+            this.deselectAllUsers();
+            this.selectUser(userID);
+        },
+        deselectAllUsers(){
+            this.matchesData.forEach(element => {
+                element.isSelected = false;
+            });
+        },
+        selectUser(userID) {
+            this.matchesData.forEach(element => {
+                if (element.id === userID) {
+                    element.isSelected = true;
+                    this.selectedLocation = {
+                        lat: parseFloat(element.location.latitude),
+                        lng: parseFloat(element.location.longitude),
+                    };
+                }
+            });
+                
+            
         }
-    },
+    }
+    
 };
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+.selected{
+    border-radius: 3px;
+    border-color: cadetblue;
+}
 </style>
