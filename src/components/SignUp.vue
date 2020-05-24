@@ -19,15 +19,24 @@
                         required
                         v-model="fullName"
                         placeholder="Full Name"/>
-
-                <input
-                        onfocus="(this.type='date')"
-                        class="block border border-grey-light w-full p-3 rounded mb-4"
-                        name="birthdate"
-                        required
-                        v-model="birthDate"
-                        v-bind:max="maxDate"
-                        placeholder="Birth Date"/>
+                <div class="flex flex-row justify-between">
+                    <input
+                            onfocus="(this.type='date')"
+                            class="block border border-grey-light w-5/8 p-3 rounded mb-4"
+                            name="birthdate"
+                            required
+                            v-model="birthDate"
+                            v-bind:max="maxDate"
+                            placeholder="Birth Date"/>
+                    <select name="gender" id="gender-select"
+                            class="block border border-grey-light w-1/4 p-1 rounded mb-4 bg-white"
+                            v-model="gender">
+                        <option value="null" disabled hidden>Gender</option>    
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
 
                 <label>
                     Interests (comma separated)
@@ -161,6 +170,7 @@ export default {
             fullName: null,
             email: null,
             birthDate: null,
+            gender: null,
             password: null,
             interestsField: null,
             imageUrl: null,
@@ -215,6 +225,7 @@ export default {
                 name: this.fullName,
                 email: this.email,
                 birthDate: this.birthDate,
+                gender: this.gender,
                 interests: this.interests,
                 expertises: this.expertises,
                 password: this.password,
