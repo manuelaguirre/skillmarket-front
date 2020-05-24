@@ -21,14 +21,6 @@
                         placeholder="Full Name"/>
 
                 <input
-                        type="email"
-                        class="block border border-grey-light w-full p-3 rounded mb-4"
-                        name="email"
-                        required
-                        v-model="email"
-                        placeholder="Email"/>
-
-                <input
                         onfocus="(this.type='date')"
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="birthdate"
@@ -37,23 +29,29 @@
                         v-bind:max="maxDate"
                         placeholder="Birth Date"/>
 
-                <input
-                        type="text"
-                        class="block border border-grey-light w-full p-3 rounded mb-4"
-                        name="interests"
-                        required
-                        v-model="interestsField"
-                        @keyup="processInterests"
-                        placeholder="Interests"/>
+                <label>
+                    Interests (comma separated)
+                    <input
+                            type="text"
+                            class="block border border-grey-light w-full p-3 rounded mb-4"
+                            name="interests"
+                            required
+                            v-model="interestsField"
+                            @keyup="processInterests"
+                            placeholder="music, photography"/>
+                </label>
 
-                <input
-                        type="text"
-                        class="block border border-grey-light w-full p-3 rounded mb-4"
-                        name="expertises"
-                        required
-                        v-model="expertisesField"
-                        @keyup="processExpertises"
-                        placeholder="Expertises"/>
+                <label>
+                    Interests (comma separated)
+                    <input
+                            type="text"
+                            class="block border border-grey-light w-full p-3 rounded mb-4"
+                            name="expertises"
+                            required
+                            v-model="expertisesField"
+                            @keyup="processExpertises"
+                            placeholder="sword fighting, french"/>
+                </label>
 
                 <input
                         type="text"
@@ -69,8 +67,8 @@
                         v-model="bio"
                         placeholder="Bio"/>
 
-                <label>
-                    <div class="flex flex-row mb-2">
+                <label class="block my-6">
+                    <div class="flex flex-row">
                         <div class="w-1/2">Location</div>
                         <button class="button w-1/2 inline-block text-sm px-4 py-2 leading-none border rounded" @click="getPosition">
                             Get
@@ -97,6 +95,14 @@
                                 placeholder="Longitude"/>
                     </div>
                 </label>
+
+                <input
+                        type="email"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="email"
+                        required
+                        v-model="email"
+                        placeholder="Email"/>
 
                 <input
                         type="password"
