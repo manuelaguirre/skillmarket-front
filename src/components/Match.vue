@@ -24,7 +24,7 @@
                             <div id="dashboard-container" class="w-full">
                                 <div id="expertises-container" class="">
                                     <h2 class="font-bold">Expertises:</h2>
-                                    <ul class="m-2">
+                                    <ul class="my-1">
                                         <li v-for="item in userData.expertises" :key="item"
                                             class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
                                             {{ item }}
@@ -33,7 +33,7 @@
                                 </div>
                                 <div id="skillwishes-container">
                                     <h2 class="font-bold">Interests:</h2>
-                                    <ul class="m-2">
+                                    <ul class="my-1">
                                         <li v-for="item in userData.interests" :key="item"
                                             class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
                                             {{ item }}
@@ -44,7 +44,7 @@
                             <div
                                     id="distance"
                                     class="font-extrabold flex-none text-right">
-                                {{calculateDistance(mainLocation, toLatLng(userData.location)).toFixed(2)}} Km
+                                {{calculateDistance(mainLocation, toLatLng(userData.location))}} Km
                             </div>
                         </div>
                     </div>
@@ -78,13 +78,13 @@ export default {
             if (!location1 || !location2 ) {
                 return;
             }
-            return distance(location1, location2);
+            return distance(location1, location2).toFixed();
         },
         calculateAge(birthDate) {
             return new Date(Date.now() - Date.parse(birthDate)).getFullYear() - 1970;
         },
         async getMatches() {
-            const response = await axios.get('http://localhost:3000/users/', {
+            const response = await axios.get('http://localhost:3000/users', {
                 credentials: 'include',
             });
             response.data.forEach(element => {
@@ -95,6 +95,10 @@ export default {
         async displayMatches() {
             this.matchesData = await this.getMatches();
             this.secondaryLocations = this.matchesData.map(d => this.toLatLng(d.location));
+            if (this.matchesData.length > 0) {
+                this.matchesData[0].isSelected = true;
+                this.selectedLocation = this.toLatLng(this.matchesData[0].location);
+            }
         },
         async getMainLocation() {
             const response = await axios.get('http://localhost:3000/users/profile', {
