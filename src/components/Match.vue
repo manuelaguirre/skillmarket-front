@@ -73,6 +73,7 @@ export default {
     },
     async created() {
         await this.displayMatches();
+        await this.getMainLocation();
     },
     methods: {
         async getMatches() {
@@ -92,10 +93,17 @@ export default {
                     lng: parseFloat(d.location.longitude),
                 };
             });
-
-            this.mainLocation = {lat:51.5, lng: 0};
-            this.selectedLocation = {lat:51.55, lng: -0.0012};
-            console.log('Match.vue updating data');
+        },
+        async getMainLocation() {
+            const response = await axios.get('http://localhost:3000/users/profile', {
+                credentials: 'include',
+            }).then(response =>  ({
+                lat: parseFloat(response.data.location.latitude),
+                lng: parseFloat(response.data.location.longitude),
+            })).then(geoObject => {
+                this.mainLocation = geoObject;            
+            });
+            
         },
         clickHandler(event) {
             const userID = event.currentTarget.dataset.userid;
