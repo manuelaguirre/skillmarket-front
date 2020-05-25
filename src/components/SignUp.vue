@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen bg-gray-300 flex flex-col">
+    <div class="bg-gray-300 flex flex-col">
         <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
             <form
                     @submit.prevent="signUp"
@@ -31,7 +31,7 @@
                     <select name="gender" id="gender-select"
                             class="block border border-grey-light w-1/4 p-1 rounded mb-4 bg-white"
                             v-model="gender">
-                        <option value="null" disabled hidden>Gender</option>    
+                        <option value="null" disabled hidden>Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Other">Other</option>

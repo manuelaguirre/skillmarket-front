@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen bg-gray-300 flex flex-col">
+    <div class="h-full bg-gray-300 flex flex-col">
         <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
             <form
                     @submit.prevent="logIn"

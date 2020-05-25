@@ -1,5 +1,5 @@
 <template>
-    <div id="app" class="flex flex-col min-h-screen justify-between">
+    <div id="app" class="flex flex-col justify-between h-screen">
         <nav id="nav" class="flex items-center justify-between flex-wrap p-6">
             <div class="flex items-center flex-shrink-0 text-white mr-6 ml-6">
                 <router-link to="/" class="flex">
@@ -55,10 +55,8 @@
                 </div>
             </div>
         </nav>
-        <div class="bg-gray-300 min-h-screen">
-            <router-view/>
-        </div>
-        <footer id="footer" class="flex flex-col justify-between items-center w-full text-center border-t border-grey p-4 pin-b h-12">
+        <router-view/>
+        <footer id="footer" class="flex flex-col justify-between items-center w-full text-center border-t border-grey p-4 h-12">
             <p class="block p-2">SkillMarket® 2020 ©</p>
         </footer>
     </div>
