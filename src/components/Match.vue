@@ -1,7 +1,7 @@
 <template>
     <div class="h-full flex flex-row flex-wrap overflow-y-scroll">
         <div class="h-full block content-around w-3/5 flex-wrap py-6 overflow-y-scroll">
-            <div class="w-full" v-for="userData in matchesData" :key="userData.id">
+            <div class="w-full" v-for="userData of matchesData" :key="userData.id">
                 <div id="profile-card" class="h-64 flex flex-row border-b border-grey-600 p-4"
                      :class="{ selected: userData.isSelected }"
                      @click.prevent="clickHandler"
@@ -51,9 +51,9 @@
                 </div>
             </div>
         </div>
-        <Map class="w-2/5"
+        <MapComponent class="w-2/5"
              v-bind:main-location="mainLocation"
-             v-bind:selected-location="selectedLocation"
+             v-bind:selected-location-id="selectedLocationId"
              v-bind:secondary-locations="secondaryLocations"
         />
     </div>
@@ -62,13 +62,16 @@
 <script>
 import axios from 'axios';
 
-import Map from '@/components/Map.vue';
+import MapComponent from '@/components/MapComponent.vue';
 import distance from '../utils/distance';
 
 export default {
     name: 'Profile',
     methods: {
         toLatLng(location) {
+            if (!location) {
+                return;
+            }
             return {
                 lat: parseFloat(location.latitude),
                 lng: parseFloat(location.longitude),
@@ -84,7 +87,7 @@ export default {
             return new Date(Date.now() - Date.parse(birthDate)).getFullYear() - 1970;
         },
         async getMatches() {
-            const response = await axios.get('http://localhost:3000/users', {
+            const response = await axios.get('http://localhost:3000/users/match/20000', {
                 credentials: 'include',
             });
             response.data.forEach(element => {
@@ -93,11 +96,14 @@ export default {
             return response.data;
         },
         async displayMatches() {
+            this.secondaryLocations = new Map();
             this.matchesData = await this.getMatches();
-            this.secondaryLocations = this.matchesData.map(d => this.toLatLng(d.location));
+            this.matchesData.forEach(m => {
+                this.secondaryLocations.set(m.id, this.toLatLng(m.location));
+            });
             if (this.matchesData.length > 0) {
+                this.selectedLocationId = this.matchesData[0].id;
                 this.matchesData[0].isSelected = true;
-                this.selectedLocation = this.toLatLng(this.matchesData[0].location);
             }
         },
         async getMainLocation() {
@@ -117,23 +123,26 @@ export default {
             });
         },
         selectUser(userID) {
-            this.matchesData.forEach(element => {
-                if (element.id === userID) {
-                    element.isSelected = true;
-                    this.selectedLocation = this.toLatLng(element.location);
+            if (this.matchesData) {
+                const currentSelected = this.matchesData.filter(e => e.id === this.selectedLocationId)[0];
+                if (currentSelected) {
+                    currentSelected.isSelected = false;
                 }
-            });
+
+                this.selectedLocationId = userID;
+                this.matchesData.filter(e => e.id === userID)[0].isSelected = true;
+            }
         }
     },
     components: {
-        Map,
+        MapComponent,
     },
     props: {},
     data() {
         return {
-            selectedLocation: null,
+            selectedLocationId: null,
             mainLocation: null,
-            secondaryLocations: [],
+            secondaryLocations: new Map(),
             matchesData: [],
         };
     },
