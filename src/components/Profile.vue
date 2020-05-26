@@ -106,7 +106,10 @@
 						<label class="block my-6">
 							<div class="flex flex-row items-end">
 								<div class="w-1/2">Location: </div>
-								<button class="button w-1/2 my-1 inline-block text-sm px-4 py-2 leading-none border rounded" @click="getPosition">
+								<button
+										type="button"
+										class="button w-1/2 my-1 inline-block text-sm px-4 py-2 leading-none border rounded"
+										@click="getPosition">
 									Get
 								</button>
 							</div>
@@ -243,7 +246,7 @@ export default {
         setPosition(position) {
             console.log(position);
             const {latitude, longitude} = position.coords;
-            this.location = {latitude, longitude};
+            this.userData.location = {latitude, longitude};
             this.gettingLocation = false;
         },
         getPosition() {
