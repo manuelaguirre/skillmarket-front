@@ -88,7 +88,7 @@ export default {
             return new Date(Date.now() - Date.parse(birthDate)).getFullYear() - 1970;
         },
         async getMatches() {
-            const response = await axios.get('http://localhost:3000/users/match/20000', {
+            const response = await axios.get(this.matchingEndpoint, {
                 credentials: 'include',
             });
             response.data.forEach(element => {
@@ -99,6 +99,7 @@ export default {
         async displayMatches() {
             this.secondaryLocations = new Map();
             this.matchesData = await this.getMatches();
+            this.matchesData = this.matchesData.filter(e => e.id !== this.mainId);
             this.matchesData.forEach(m => {
                 this.secondaryLocations.set(m.id, this.toLatLng(m.location));
             });
@@ -114,6 +115,7 @@ export default {
             const response = await axios.get('http://localhost:3000/users/profile', {
                 credentials: 'include',
             });
+            this.mainId = response.data.id;
             this.mainLocation = this.toLatLng(response.data.location);
         },
         clickHandler(event) {
@@ -141,19 +143,34 @@ export default {
     components: {
         MapComponent,
     },
-    props: {},
+    props: {
+        maxDistanceKm: {
+            type: Number,
+            default: 20000,
+        },
+        explore: {
+            type: Boolean,
+            default: false,
+        }
+    },
+    computed: {
+        matchingEndpoint: function() {
+            return this.explore ? 'http://localhost:3000/users/' : `http://localhost:3000/users/match/${this.maxDistanceKm}`;
+        },
+    },
     data() {
         return {
             selectedLocationId: null,
             mainLocation: null,
+            mainId: null,
             shouldReprocessSecondaryLocations: false,
             secondaryLocations: new Map(),
             matchesData: [],
         };
     },
     async created() {
-        await this.displayMatches();
         await this.getMainLocation();
+        await this.displayMatches();
     }
 };
 </script>
