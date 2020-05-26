@@ -35,7 +35,7 @@
 
             <div class="text-grey-dark mt-6">
                 Don't have an account yet?
-                <a class="no-underline border-b border-blue text-blue" href="#/signup">
+                <a class="no-underline border-b border-blue text-blue" href="/signup">
                     Sign Up
                 </a>.
             </div>
@@ -62,8 +62,10 @@ export default {
                 password: this.password,
             };
 
-            await this.$store.dispatch('login', data);
-            await this.$router.push('/');
+            const successful = await this.$store.dispatch('login', data);
+            if (successful) {
+                await this.$router.push('/profile');
+            }
         },
     },
 };

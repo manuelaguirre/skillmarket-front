@@ -138,7 +138,7 @@
 								name="password"
 								autocomplete="new-password"
 								v-model="userData.password"
-								pattern="^(?=.*?[\p{Lu}])(?=.*?[\p{Ll}])(?=.*?\d).{8,}$"
+								pattern="/^(?=.*?[\p{Lu}])(?=.*?[\p{Ll}])(?=.*?\d).{8,}$/"
 								title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
 								placeholder="Password"/>
 						<input

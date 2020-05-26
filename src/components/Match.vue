@@ -1,19 +1,19 @@
 <template>
-    <div class="h-full flex flex-row flex-wrap overflow-y-scroll">
+    <div class="flex-grow flex flex-row flex-wrap overflow-y-scroll">
         <div class="h-full block content-around w-3/5 flex-wrap py-6 overflow-y-scroll">
             <div class="w-full" v-for="userData of matchesData" :key="userData.id">
-                <div id="profile-card" class="h-64 flex flex-row border-b border-grey-600 p-4"
+                <div id="profile-card" class="h-64 flex flex-row border-b border-grey-600 p-4 overflow-auto"
                      :class="{ selected: userData.isSelected }"
                      @click.prevent="clickHandler"
                      :data-userid="userData.id">
-                    <div id="image-container" class="rounded-md overflow-hidden h-full w-1/3 mx-auto object-cover">
-                        <img :src="userData.imageUrl" alt="" srcset="">
+                    <div id="image-container" class="rounded-md overflow-hidden h-full w-1/3 mx-auto">
+                        <img :src="userData.imageUrl" alt="" srcset="" class="object-cover w-full h-full">
                     </div>
                     <div class="w-2/3 text-left ml-6">
                         <div id="info-wrapper" class="w-full mb-3">
                             <div class="flex items-baseline">
-                                <span id="name" class="text-2xl font-bold align-baseline mr-5">{{ userData.name }}</span>
-                                <span id="age" class="text-xl align-baseline">{{calculateAge(userData.birthDate)}}</span>
+                                <span id="name" class="text-xl font-bold align-baseline mr-5">{{ userData.name }}</span>
+                                <span id="age" class="text-l align-baseline">{{calculateAge(userData.birthDate)}}</span>
                                 <span class="text-l align-baseline mx-1">·</span>
                                 <span id="gender" class="text-l align-baseline">{{userData.gender}}</span>
                                 <span id="email" class="text-right w-full align-baseline mr-2">{{userData.email}}</span>
@@ -23,7 +23,7 @@
                         <div class="flex flex-row items-end">
                             <div id="dashboard-container" class="w-full">
                                 <div id="expertises-container" class="">
-                                    <h2 class="font-bold">Expertises:</h2>
+                                    <h2 class="font-bold">Expertise Areas:</h2>
                                     <ul class="my-1">
                                         <li v-for="item in userData.expertises" :key="item"
                                             class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
@@ -88,7 +88,7 @@ export default {
             return new Date(Date.now() - Date.parse(birthDate)).getFullYear() - 1970;
         },
         async getMatches() {
-            const response = await axios.get('http://localhost:3000/users', {
+            const response = await axios.get('http://localhost:3000/users/match/20000', {
                 credentials: 'include',
             });
             response.data.forEach(element => {

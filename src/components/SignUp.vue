@@ -152,7 +152,7 @@
 
             <div class="text-grey-dark mt-6">
                 Already have an account?
-                <a class="no-underline border-b border-blue text-blue" href="#/login">
+                <a class="no-underline border-b border-blue text-blue" href="/login">
                     Log in
                 </a>.
             </div>
@@ -235,8 +235,10 @@ export default {
                 bio: this.bio,
             };
 
-            await this.$store.dispatch('register', data);
-            await this.$router.push('/profile');
+            const successful = await this.$store.dispatch('register', data);
+            if (successful) {
+                await this.$router.push('/profile');
+            }
         },
     },
 };

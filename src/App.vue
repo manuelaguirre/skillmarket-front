@@ -55,6 +55,13 @@
                 </div>
             </div>
         </nav>
+        <div v-if="errors.length" class="bg-red-200 p-3 rounded-md text-lg text-red-700 font-bold">
+            <button id="close-errors-button" class="float-right inline-block p-2 rounded" style="background:transparent; color:#c53030" @click="clearErrors">X</button>
+            Error:
+            <ul>
+                <li v-for="error in errors" :key="error">{{ error }}</li>
+            </ul>
+        </div>
         <router-view/>
         <footer id="footer" class="flex flex-col justify-between items-center w-full text-center border-t border-grey p-4 h-12">
             <p class="block p-2">SkillMarket® 2020 ©</p>
@@ -70,12 +77,18 @@ export default {
         isLoggedIn() {
             return this.$store.getters.isLoggedIn;
         },
+        errors() {
+            return this.$store.getters.errors;
+        },
     },
     methods: {
         async logOut() {
             await this.$store.dispatch('logout');
             await this.$router.push('/login');
         },
+        async clearErrors() {
+            await this.$store.dispatch('clearErrors');
+        }
     },
 };
 </script>
@@ -125,5 +138,10 @@ export default {
         font-weight: bold;
         color: #264a63;
         background: #db9c6d;
+    }
+
+    #close-errors-button button {
+        background: transparent;
+        color: red;
     }
 </style>
