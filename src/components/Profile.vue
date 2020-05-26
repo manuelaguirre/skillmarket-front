@@ -149,7 +149,7 @@
 								type="password"
 								class="block border border-grey-light w-full p-3 rounded mb-4"
 								name="confirm_password"
-								autocomplete="mew-password-confirmation"
+								autocomplete="new-password-confirmation"
 								v-model="userData.passwordConfirmation"
 								pattern="^(?=.*?[\p{Lu}])(?=.*?[\p{Ll}])(?=.*?\d).{8,}$"
 								title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
@@ -258,8 +258,15 @@ export default {
             const value = e.dataTransfer.getData('text/plain');
             this.userData.imageUrl = value;
         },
+        clean(obj) {
+            for (var propName in obj) { 
+                if (obj[propName] === null || obj[propName] === undefined || obj[propName] === '' ) {
+                    delete obj[propName];
+                }
+            }
+        },
         updateProfile() {
-            axios.put('http://localhost:3000/users/profile', this.userData,{
+            axios.put('http://localhost:3000/users/profile', this.clean(this.userData), {
                 credentials: 'include',
             });
         }
