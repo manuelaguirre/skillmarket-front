@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-screen bg-gray-300 flex flex-col">
-        <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
+    <div class="bg-gray-300 flex flex-col flex-grow">
+        <div class="container max-w-sm mx-auto my-2 flex-1 flex flex-col items-center justify-center px-2">
             <form
                     @submit.prevent="signUp"
                     class="bg-white px-6 py-8 rounded shadow-md w-full"
@@ -12,98 +12,6 @@
                         <li v-for="error in errors" :key="error">{{ error }}</li>
                     </ul>
                 </div>
-                <input
-                        type="text"
-                        class="block border border-grey-light w-full p-3 rounded mb-4"
-                        name="fullname"
-                        required
-                        v-model="fullName"
-                        placeholder="Full Name"/>
-                <div class="flex flex-row justify-between">
-                    <input
-                            onfocus="(this.type='date')"
-                            class="block border border-grey-light w-5/8 p-3 rounded mb-4"
-                            name="birthdate"
-                            required
-                            v-model="birthDate"
-                            :max="maxDate"
-                            placeholder="Birth Date"/>
-                    <select name="gender" id="gender-select"
-                            class="block border border-grey-light w-1/4 p-1 rounded mb-4 bg-white"
-                            v-model="gender">
-                        <option value="null" disabled hidden>Gender</option>    
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-
-                <label>
-                    Interests (comma separated)
-                    <input
-                            type="text"
-                            class="block border border-grey-light w-full p-3 rounded mb-4"
-                            name="interests"
-                            required
-                            v-model="interestsField"
-                            @keyup="processInterests"
-                            placeholder="music, photography"/>
-                </label>
-
-                <label>
-                    Expertises (comma separated)
-                    <input
-                            type="text"
-                            class="block border border-grey-light w-full p-3 rounded mb-4"
-                            name="expertises"
-                            required
-                            v-model="expertisesField"
-                            @keyup="processExpertises"
-                            placeholder="sword fighting, french"/>
-                </label>
-
-                <input
-                        type="text"
-                        class="block border border-grey-light w-full p-3 rounded mb-4"
-                        name="imageUrl"
-                        v-model="imageUrl"
-                        placeholder="Profile pic URL"/>
-
-                <input
-                        type="text"
-                        class="block border border-grey-light w-full p-3 rounded mb-4"
-                        name="bio"
-                        v-model="bio"
-                        placeholder="Bio"/>
-
-                <label class="block my-6">
-                    <div class="flex flex-row">
-                        <div class="w-1/2">Location</div>
-                        <button class="button w-1/2 inline-block text-sm px-4 py-2 leading-none border rounded" @click="getPosition">
-                            Get
-                        </button>
-                    </div>
-                    <div v-if="gettingLocation" class="bg-yellow-200 mb-2 rounded">
-                        Processing...
-                    </div>
-                    <div class="flex flex-row">
-                        <input
-                                type="text"
-                                class="block border border-grey-light w-1/2 p-3 rounded mb-4"
-                                name="latitude"
-                                required
-                                v-model="location.latitude"
-                                placeholder="Latitude"/>
-
-                        <input
-                                type="text"
-                                class="block border border-grey-light w-1/2 p-3 rounded mb-4"
-                                name="longitude"
-                                required
-                                v-model="location.longitude"
-                                placeholder="Longitude"/>
-                    </div>
-                </label>
 
                 <input
                         type="email"
@@ -167,24 +75,9 @@ export default {
     data() {
         return {
             errors: [],
-            fullName: null,
             email: null,
-            birthDate: null,
-            gender: null,
             password: null,
-            interestsField: null,
-            imageUrl: null,
-            interests: [],
-            expertisesField: null,
-            expertises: [],
             passwordConfirmation: null,
-            maxDate: new Date(),
-            bio: null,
-            gettingLocation: false,
-            location: {
-                latitude: null,
-                longitude: null,
-            },
         };
     },
     methods: {
@@ -195,26 +88,6 @@ export default {
             }
             this.errors = [];
             return true;
-        },
-        processInterests() {
-            this.interests = this.interestsField ? this.interestsField.split(',') : [];
-        },
-        processExpertises() {
-            this.expertises = this.expertisesField ? this.expertisesField.split(',') : [];
-        },
-        setPosition(position) {
-            console.log(position);
-            const {latitude, longitude} = position.coords;
-            this.location = {latitude, longitude};
-            this.gettingLocation = false;
-        },
-        getPosition() {
-            if (!navigator.geolocation) {
-                console.log('Geolocation is not supported by your browser');
-            } else {
-                this.gettingLocation = true;
-                navigator.geolocation.getCurrentPosition(this.setPosition, console.log);
-            }
         },
         async signUp() {
             if (!this.validatePassword()) {
