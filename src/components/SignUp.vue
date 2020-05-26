@@ -1,6 +1,6 @@
 <template>
-    <div class="bg-gray-300 flex flex-col flex-grow">
-        <div class="container max-w-sm mx-auto my-2 flex-1 flex flex-col items-center justify-center px-2">
+    <div class="min-h-screen bg-gray-300 flex flex-col">
+        <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
             <form
                     @submit.prevent="signUp"
                     class="bg-white px-6 py-8 rounded shadow-md w-full"
@@ -26,12 +26,12 @@
                             name="birthdate"
                             required
                             v-model="birthDate"
-                            v-bind:max="maxDate"
+                            :max="maxDate"
                             placeholder="Birth Date"/>
                     <select name="gender" id="gender-select"
                             class="block border border-grey-light w-1/4 p-1 rounded mb-4 bg-white"
                             v-model="gender">
-                        <option value="null" disabled hidden>Gender</option>
+                        <option value="null" disabled hidden>Gender</option>    
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Other">Other</option>

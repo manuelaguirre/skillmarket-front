@@ -2,26 +2,32 @@
 	<div class="bg-gray-300 flex flex-col flex-grow items-center justify-center">
 		<div class="container mx-auto my-2 items-center justify-center px-2 flex flex-col">
 			<form
-					@submit.prevent="signUp"
+					@submit.prevent="updateProfile"
 					class="bg-white px-6 py-8 rounded shadow-md flex flex-col"
 			>
-				<h1 class="mb-8 text-3xl text-center flex-initial">Sign up</h1>
+				<h1 class="mb-8 text-3xl text-center font-extrabold flex-initial">Profile</h1>
 				<div v-if="errors.length" class="bg-red-200 p-3 mb-4 rounded-md">
 					<b>Please correct the following error(s):</b>
 					<ul>
 						<li v-for="error in errors" :key="error">{{ error }}</li>
 					</ul>
 				</div>
-				<div class="flex flex-col sm:flex-row flex-initial items-center justify-center">
-					<div class="m-6 sm:w-1/3 w-full flex-grow-0">
+				<div class="flex flex-col sm:flex-row flex-initial items-start justify-center">
+					<div class="m-6 pr-3 sm:w-1/3 w-full items-start flex-grow-0 border-r border-silver border-solid">
 						<div id="image-container" class="rounded-md overflow-hidden w-48 mx-auto mb-2">
-							<img :src="userData.imageUrl" alt="" srcset="">
+							<img :src="userData.imageUrl"
+							@error="handleImageLoadError" 
+							:class="{error : imageLoadError}" 
+							alt="Your profile picture." 
+							srcset="">
+							<p v-if="imageLoadError" class="text-red-400">Invalid Image URL</p>
 						</div>
 						<input
 								type="text"
 								class="block border border-grey-light w-full p-3 rounded mb-4"
 								name="imageUrl"
-								v-model="userData.imageUrl"
+								@focus="clearImageLoadError" 
+								v-model.lazy="userData.imageUrl"
 								placeholder="Profile pic URL"/>
 					</div>
 					<div class="m-6 sm:w-2/3 w-full flex-grow-0">
@@ -29,7 +35,6 @@
 								type="text"
 								class="block border border-grey-light w-full p-3 rounded mb-4"
 								name="fullname"
-								required
 								v-model="userData.name"
 								placeholder="Full Name"/>
 						<div class="flex flex-row justify-between">
@@ -37,7 +42,7 @@
 									onfocus="(this.type='date')"
 									class="block border border-grey-light w-5/8 p-3 rounded mb-4"
 									name="birthdate"
-									required
+
 									v-model="userData.birthDate"
 									v-bind:max="maxDate"
 									placeholder="Birth Date"/>
@@ -57,7 +62,7 @@
 									type="text"
 									class="block border border-grey-light w-full p-3 rounded mb-4"
 									name="interests"
-									required
+
 									v-model="interestsField"
 									@keyup="processInterests"
 									placeholder="music, photography"/>
@@ -69,7 +74,7 @@
 									type="text"
 									class="block border border-grey-light w-full p-3 rounded mb-4"
 									name="expertises"
-									required
+
 									v-model="expertisesField"
 									@keyup="processExpertises"
 									placeholder="sword fighting, french"/>
@@ -97,7 +102,7 @@
 										type="text"
 										class="block border border-grey-light w-1/2 p-3 rounded mb-4"
 										name="latitude"
-										required
+	
 										v-model="userData.location.latitude"
 										placeholder="Latitude"/>
 
@@ -105,7 +110,7 @@
 										type="text"
 										class="block border border-grey-light w-1/2 p-3 rounded mb-4"
 										name="longitude"
-										required
+	
 										v-model="userData.location.longitude"
 										placeholder="Longitude"/>
 							</div>
@@ -116,13 +121,11 @@
 								class="block border border-grey-light w-full p-3 rounded mb-4"
 								name="email"
 								autocomplete="email"
-								required
 								v-model="userData.email"
 								placeholder="Email"/>
 
 <!--						<input-->
 <!--								type="password"-->
-<!--								required-->
 <!--								class="block border border-grey-light w-full p-3 rounded mb-4"-->
 <!--								name="password"-->
 <!--								autocomplete="current-password"-->
@@ -133,7 +136,6 @@
 
 						<input
 								type="password"
-								required
 								class="block border border-grey-light w-full p-3 rounded mb-4"
 								name="password"
 								autocomplete="new-password"
@@ -143,7 +145,6 @@
 								placeholder="Password"/>
 						<input
 								type="password"
-								required
 								class="block border border-grey-light w-full p-3 rounded mb-4"
 								name="confirm_password"
 								autocomplete="mew-password-confirmation"
@@ -156,7 +157,7 @@
 						<button
 								type="submit"
 								class="w-full text-center py-3 rounded bg-green-300 text-white hover:bg-green-dark focus:outline-none my-1"
-						>Create Account
+						>Update Profile
 						</button>
 					</div>
 				</div>
@@ -179,7 +180,8 @@ export default {
     props:{},
     data() {
         return {
-            errors: ['someerror'],
+            errors: [],
+            imageLoadError: false,
             interestsField: null,
             expertisesField: null,
             gettingLocation: false,
@@ -236,16 +238,28 @@ export default {
         },
         validatePassword() {
             if (this.password !== this.passwordConfirmation) {
-                this.errors = ['Passwords do not match'];
+                this.errors.push(['Passwords do not match']);
                 return false;
             }
-            this.errors = [];
+            this.errors;
             return true;
         },
+        handleImageLoadError() {
+            this.imageLoadError = true;			
+        },
+        clearImageLoadError() {
+            this.imageLoadError = false;
+        },
+        updateProfile() {
+            axios.put('http://localhost:3000/users/profile', this.userData,{
+                credentials: 'include',
+            });
+        }
+		
     },
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 
 </style>
