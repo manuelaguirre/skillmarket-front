@@ -1,6 +1,6 @@
 <template>
     <div class="h-full bg-gray-300 flex flex-col">
-        <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
+        <div class="container max-w-sm mx-auto my-2 flex-1 flex flex-col items-center justify-center px-2">
             <form
                     @submit.prevent="logIn"
                     class="bg-white px-6 py-8 rounded shadow-md text-black w-full"
