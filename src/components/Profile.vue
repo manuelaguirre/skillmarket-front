@@ -20,14 +20,16 @@
 							:class="{error : imageLoadError}" 
 							alt="Your profile picture." 
 							srcset="">
-							<p v-if="imageLoadError" class="text-red-400">Invalid Image URL</p>
+							<p v-show="imageLoadError" class="text-red-400">Invalid Image URL</p>
 						</div>
 						<input
 								type="text"
 								class="block border border-grey-light w-full p-3 rounded mb-4"
 								name="imageUrl"
-								@focus="clearImageLoadError" 
+								@focus="clearImageLoadError"
+								@drop="handleDropEvent" 
 								v-model.lazy="userData.imageUrl"
+
 								placeholder="Profile pic URL"/>
 					</div>
 					<div class="m-6 sm:w-2/3 w-full flex-grow-0">
@@ -215,12 +217,14 @@ export default {
         async displayUser() {
             const user = await this.getUser();
             this.userData = {...user};
+            this.expertisesField = this.userData.expertises.join();
+            this.interestsField = this.userData.interests.join();
         },
         processInterests() {
-            this.interests = this.interestsField ? this.interestsField.split(',') : [];
+            this.userData.interests = this.interestsField ? this.interestsField.split(',') : [];
         },
         processExpertises() {
-            this.expertises = this.expertisesField ? this.expertisesField.split(',') : [];
+            this.userData.expertises = this.expertisesField ? this.expertisesField.split(',') : [];
         },
         setPosition(position) {
             console.log(position);
@@ -249,6 +253,10 @@ export default {
         },
         clearImageLoadError() {
             this.imageLoadError = false;
+        },
+        handleDropEvent(e) {
+            const value = e.dataTransfer.getData('text/plain');
+            this.userData.imageUrl = value;
         },
         updateProfile() {
             axios.put('http://localhost:3000/users/profile', this.userData,{
