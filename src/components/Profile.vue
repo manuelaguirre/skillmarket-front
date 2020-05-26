@@ -15,7 +15,7 @@
 				<div class="flex flex-col sm:flex-row flex-initial items-center justify-center">
 					<div class="m-6 sm:w-1/3 w-full flex-grow-0">
 						<div id="image-container" class="rounded-md overflow-hidden w-48 mx-auto mb-2">
-							<img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="" srcset="">
+							<img :src="userData.imageUrl" alt="" srcset="">
 						</div>
 						<input
 								type="text"

@@ -9,14 +9,14 @@
                     <div id="image-container" class="rounded-md overflow-hidden h-full w-1/3 mx-auto object-cover">
                         <img :src="userData.imageUrl" alt="" srcset="">
                     </div>
-                    <div class="w-2/3 overflow-y-scroll text-left ml-6">
+                    <div class="w-2/3 text-left ml-6">
                         <div id="info-wrapper" class="w-full mb-3">
                             <div class="flex items-baseline">
-                                <span id="name" class="text-3xl font-bold align-baseline mr-5">{{ userData.name }}</span>
-                                <span id="age" class="text-2xl align-baseline">{{calculateAge(userData.birthDate)}}</span>
-                                <span class="text-xl align-baseline mx-1">·</span>
-                                <span id="gender" class="text-xl align-baseline">{{userData.gender}}</span>
-                                <span id="email" class="text-right w-full align-baseline">{{userData.email}}</span>
+                                <span id="name" class="text-2xl font-bold align-baseline mr-5">{{ userData.name }}</span>
+                                <span id="age" class="text-xl align-baseline">{{calculateAge(userData.birthDate)}}</span>
+                                <span class="text-l align-baseline mx-1">·</span>
+                                <span id="gender" class="text-l align-baseline">{{userData.gender}}</span>
+                                <span id="email" class="text-right w-full align-baseline mr-2">{{userData.email}}</span>
                             </div>
                             <div id="bio">{{ userData.bio }}</div>
                         </div>
@@ -43,7 +43,7 @@
                             </div>
                             <div
                                     id="distance"
-                                    class="font-extrabold flex-none text-right">
+                                    class="font-extrabold flex-none text-right mr-2">
                                 {{calculateDistance(mainLocation, toLatLng(userData.location))}} Km
                             </div>
                         </div>
@@ -55,6 +55,7 @@
              v-bind:main-location="mainLocation"
              v-bind:selected-location-id="selectedLocationId"
              v-bind:secondary-locations="secondaryLocations"
+             v-bind:should-reprocess-secondary-locations="shouldReprocessSecondaryLocations"
         />
     </div>
 </template>
@@ -87,7 +88,7 @@ export default {
             return new Date(Date.now() - Date.parse(birthDate)).getFullYear() - 1970;
         },
         async getMatches() {
-            const response = await axios.get('http://localhost:3000/users/match/20000', {
+            const response = await axios.get('http://localhost:3000/users', {
                 credentials: 'include',
             });
             response.data.forEach(element => {
@@ -105,6 +106,9 @@ export default {
                 this.selectedLocationId = this.matchesData[0].id;
                 this.matchesData[0].isSelected = true;
             }
+            // TODO: Vue won't trigger a watch when adding an element to the map, so this flag is needed. This should
+            // be possible to fix with VUEX, without using a flag like this one.
+            this.shouldReprocessSecondaryLocations = !this.shouldReprocessSecondaryLocations;
         },
         async getMainLocation() {
             const response = await axios.get('http://localhost:3000/users/profile', {
@@ -142,6 +146,7 @@ export default {
         return {
             selectedLocationId: null,
             mainLocation: null,
+            shouldReprocessSecondaryLocations: false,
             secondaryLocations: new Map(),
             matchesData: [],
         };

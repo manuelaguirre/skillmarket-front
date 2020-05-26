@@ -5,9 +5,10 @@
 <script>
 import gmapsInit from '../utils/gmaps';
 
+// TODO: fix this component using VUEX
 export default {
     name: 'MapComponent',
-    props: ['mainLocation', 'selectedLocationId', 'secondaryLocations'],
+    props: ['mainLocation', 'selectedLocationId', 'secondaryLocations', 'shouldReprocessSecondaryLocations'],
     computed: {
         center: function() {
             return this.mainLocation ? this.mainLocation : {lat:0, lng:0};
@@ -15,34 +16,36 @@ export default {
     },
     watch: {
         mainLocation: function(value) {
-            this.mainLocation = value;
+            console.log(`main location changed = ${JSON.stringify(value)}`);
             if (this.google && this.map && value) {
+                console.log('creating main location marker');
                 new this.google.maps.Marker({position: value, map: this.map, label: 'You'});
             }
             this.fitMap();
         },
-        selectedLocationId: function (value) {
+        selectedLocationId: function (value, oldValue) {
+            console.log(`selected location id changed = ${JSON.stringify(value)}`);
             if (this.google && this.map && value) {
-                if (this.previousSelectedId) {
-                    const marker = this.markers.get(this.previousSelectedId);
+                if (oldValue) {
+                    console.log('unselecting previous selected marker');
+                    const marker = this.markers.get(oldValue);
                     if (marker) {
                         marker.setLabel('');
                         marker.setOpacity(0.5);
                     }
                 }
 
-                this.selectedLocationId = value;
-                this.previousSelectedId = value;
-
                 this.renderSelectedMarker();
             }
         },
-        secondaryLocations: function (value) {
+        // TODO: I suspect this could be implemented using VUEX without need for this flag.
+        shouldReprocessSecondaryLocations : function(value) {
             console.log(`settingSecondaryLocations to ${JSON.stringify(value)} ${typeof value}`);
-            this.secondaryLocations = value;
 
-            if (this.google && this.map && value) {
+            if (this.google && this.map) {
+                console.log('calling secondary markers render');
                 this.renderSecondaryMarkers();
+                this.renderSelectedMarker();
             }
         },
     },
@@ -52,28 +55,31 @@ export default {
             google: null,
             markers: new Map(),
             mainMarker: null,
-            previousSelectedId: null,
         };
     },
     async mounted() {
+        console.log('mounted()');
         try {
             this.google = await gmapsInit();
 
             this.map = new this.google.maps.Map(this.$el, {
                 center: this.center,
-                zoom: 12
+                zoom: 12,
             });
 
             if (this.mainLocation) {
+                console.log(`main location exists ${JSON.stringify(this.mainLocation)}`);
                 if (this.mainMarker) {
+                    console.log(`main marker exists ${JSON.stringify(this.mainMarker)}`);
                     this.mainMarker.setPosition(this.mainLocation);
                 } else {
+                    console.log('creating main marker');
                     this.mainMarker = new this.google.maps.Marker({position: this.mainLocation, map: this.map, label: 'You'});
                 }
             }
 
             if (this.selectedLocationId) {
-                this.previousSelectedId = this.selectedLocationId;
+                console.log(`selected location exists ${JSON.stringify(this.selectedLocationId)}`);
             }
 
             this.renderSecondaryMarkers();
@@ -85,18 +91,26 @@ export default {
     },
     methods: {
         renderSecondaryMarkers() {
+            console.log('renderSecondaryMarkers()');
+            console.log(`secondaryLocations = ${JSON.stringify(this.secondaryLocations)}`);
             if (this.secondaryLocations) {
+                console.log('creating secondary markers');
                 this.markers = new Map();
                 this.secondaryLocations.forEach((value, key) => {
+                    console.log(`creating marker ${key}`);
                     const marker = new this.google.maps.Marker({position: value, map: this.map, opacity: 0.5});
                     this.markers.set(key, marker);
                 });
             }
         },
         renderSelectedMarker() {
+            console.log('renderSelectedMarker()');
+            console.log(`selectedLocationId = ${this.selectedLocationId}`);
             if (this.selectedLocationId) {
+                console.log('selecting new marker');
                 const selectedMarker = this.markers.get(this.selectedLocationId);
                 if (selectedMarker) {
+                    console.log('modifying selected marker');
                     selectedMarker.setLabel('Selected');
                     selectedMarker.setOpacity(1);
                 }
@@ -104,9 +118,12 @@ export default {
             this.fitMap();
         },
         fitMap() {
+            console.log('fitMap()');
             if (this.google && this.secondaryLocations) {
                 const selectedLocation = this.secondaryLocations.get(this.selectedLocationId);
+                console.log(`getting selected location to fit map = ${JSON.stringify(selectedLocation)}`);
                 if (this.mainLocation && selectedLocation) {
+                    console.log('actually fitting map');
                     const bounds = new this.google.maps.LatLngBounds()
                         .extend(this.mainLocation)
                         .extend(selectedLocation);
