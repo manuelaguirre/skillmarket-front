@@ -193,6 +193,7 @@
 </template>
 
 <script>
+import { API_URL } from '../config';
 import axios from 'axios';
 export default {
     name:'Profile',
@@ -226,7 +227,7 @@ export default {
     },
     methods: {
         async getUser() {
-            const response = await axios.get('http://localhost:3000/users/profile', {
+            const response = await axios.get(`${API_URL}/users/profile`, {
                 credentials: 'include',
             });
             return response.data;
@@ -279,7 +280,7 @@ export default {
             if (!this.validatePassword()) {
                 return;
             }
-            axios.put('http://localhost:3000/users/profile', this.userData,{
+            axios.put(`${API_URL}/users/profile`, this.userData,{
                 credentials: 'include',
             });
         }

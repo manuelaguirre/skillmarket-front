@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { API_URL } from '../../config';
+
 
 const LOGGED_IN_TOKEN_KEY = 'loggedInToken';
 
@@ -41,7 +43,7 @@ export default {
                 commit('auth_request');
 
                 // TODO: don't hardcode URLS, and use HTTPS
-                const response = await axios.post('http://localhost:3000/login', user);
+                const response = await axios.post(`${API_URL}/login`, user);
 
                 const { status } = response;
 
@@ -64,7 +66,7 @@ export default {
 
             // TODO: don't hardcode URLS, and use HTTPS
             try {
-                const response = await axios.post('http://localhost:3000/register', user);
+                const response = await axios.post(`${API_URL}/register`, user);
 
                 const {status} = response;
 
@@ -85,7 +87,7 @@ export default {
         async logout({commit}) {
             // TODO: don't hardcode URLS, and use HTTPS
             try {
-                const response = await axios.post('http://localhost:3000/logout');
+                const response = await axios.post(`${API_URL}/logout`);
 
                 const {status} = response;
 

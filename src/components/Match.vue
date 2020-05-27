@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import { API_URL } from '../config';
 import axios from 'axios';
 
 import MapComponent from '@/components/MapComponent.vue';
@@ -112,7 +113,7 @@ export default {
             this.shouldReprocessSecondaryLocations = !this.shouldReprocessSecondaryLocations;
         },
         async getMainLocation() {
-            const response = await axios.get('http://localhost:3000/users/profile', {
+            const response = await axios.get(`${API_URL}/users/profile`, {
                 credentials: 'include',
             });
             this.mainId = response.data.id;
@@ -155,7 +156,7 @@ export default {
     },
     computed: {
         matchingEndpoint: function() {
-            return this.explore ? 'http://localhost:3000/users/' : `http://localhost:3000/users/match/${this.maxDistanceKm}`;
+            return this.explore ? `${API_URL}/users/` : `${API_URL}/users/match/${this.maxDistanceKm}`;
         },
     },
     data() {
