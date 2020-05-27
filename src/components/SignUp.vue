@@ -1,8 +1,8 @@
 <template>
-    <div class="min-h-screen bg-gray-300 flex flex-col">
-        <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
+    <div class="bg-gray-300 flex flex-col flex-grow">
+        <div class="container max-w-sm mx-auto my-2 flex-1 flex flex-col items-center justify-center px-2">
             <form
-                    @submit="signUp"
+                    @submit.prevent="signUp"
                     class="bg-white px-6 py-8 rounded shadow-md w-full"
             >
                 <h1 class="mb-8 text-3xl text-center">Sign up</h1>
@@ -12,13 +12,6 @@
                         <li v-for="error in errors" :key="error">{{ error }}</li>
                     </ul>
                 </div>
-                <input
-                        type="text"
-                        class="block border border-grey-light w-full p-3 rounded mb-4"
-                        name="fullname"
-                        required
-                        v-model="fullName"
-                        placeholder="Full Name"/>
 
                 <input
                         type="email"
@@ -28,12 +21,6 @@
                         v-model="email"
                         placeholder="Email"/>
 
-                <DatePicker v-model="birthDate"
-                        :max-date="maxDate"
-                         :input-props='{
-    class: "block border border-grey-light w-full p-3 rounded mb-4",
-    readonly: true
-  }'/>
                 <input
                         type="password"
                         required
@@ -52,6 +39,7 @@
                         pattern="^(?=.*?[\p{Lu}])(?=.*?[\p{Ll}])(?=.*?\d).{8,}$"
                         title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
                         placeholder="Confirm Password"/>
+
 
                 <button
                         type="submit"
@@ -72,7 +60,7 @@
 
             <div class="text-grey-dark mt-6">
                 Already have an account?
-                <a class="no-underline border-b border-blue text-blue" href="#/login">
+                <a class="no-underline border-b border-blue text-blue" href="/login">
                     Log in
                 </a>.
             </div>
@@ -81,42 +69,16 @@
 </template>
 
 <script>
-import axios from 'axios';
-import {DatePicker} from 'v-calendar';
-
 export default {
     name: 'SignUp',
-    components: {
-        DatePicker,
-    },
     props: {},
     data() {
         return {
             errors: [],
-            name: null,
             email: null,
-            birthDate:null,
             password: null,
             passwordConfirmation: null,
-            maxDate: new Date()
         };
-    },
-    computed: {
-        formattedBirthDate() 
-        {
-            var d = this.birthDate,
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) 
-                month = '0' + month;
-            if (day.length < 2) 
-                day = '0' + day;
-
-            return [year, month, day].join('-');
-        }
-        
     },
     methods: {
         validatePassword() {
@@ -124,26 +86,30 @@ export default {
                 this.errors = ['Passwords do not match'];
                 return false;
             }
+            this.errors = [];
             return true;
         },
-        async signUp(e) {
-            e.preventDefault();
+        async signUp() {
             if (!this.validatePassword()) {
                 return;
             }
 
-            // TODO: don't hardcode URLS, and use HTTPS
-            const response = await axios.post('http://localhost:3000/register', {
+            const data = {
                 name: this.fullName,
                 email: this.email,
-                birthDate: this.formattedBirthDate,
+                birthDate: this.birthDate,
+                gender: this.gender,
+                interests: this.interests,
+                expertises: this.expertises,
                 password: this.password,
                 passwordConfirmation: this.passwordConfirmation,
-            });
+                location: this.location,
+                imageUrl: this.imageUrl,
+                bio: this.bio,
+            };
 
-            const {status} = response;
-
-            if (status === 200) {
+            const successful = await this.$store.dispatch('register', data);
+            if (successful) {
                 await this.$router.push('/profile');
             }
         },
