@@ -21,6 +21,10 @@
                         v-model="email"
                         placeholder="Email"/>
 
+                <div class="text-grey-dark my-6 text-s">
+                    <span class="font-bold">Note:</span> this email address will be shared with other members.
+                </div>
+
                 <input
                         type="password"
                         required
