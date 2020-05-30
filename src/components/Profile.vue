@@ -1,6 +1,6 @@
 <template>
 	<div class="bg-gray-300 flex flex-col flex-grow items-center justify-center">
-		<div class="container mx-auto my-2 items-center justify-center px-2 flex flex-col">
+		<div class="container mx-auto my-2 items-center justify-center px-2 flex flex-1 flex-col">
 			<form
 					@submit.prevent="updateProfile"
 					class="bg-white px-6 py-8 rounded shadow-md flex flex-col"
@@ -13,7 +13,7 @@
 					</ul>
 				</div>
 				<div class="flex flex-col sm:flex-row flex-initial items-start justify-center">
-					<div class="m-6 pr-3 sm:w-1/3 w-full items-start flex-grow-0 border-r border-silver border-solid">
+					<div class="sm:m-6 px-3 sm:w-1/3 w-full items-start flex-grow-0 border-r border-silver border-solid">
 						<div id="image-container" class="rounded-md overflow-hidden w-48 mx-auto mb-2">
 							<img :src="userData.imageUrl"
 							@error="handleImageLoadError"
@@ -35,7 +35,7 @@
 									placeholder="http://example.jpg"/>
 						</label>
 					</div>
-					<div class="m-6 sm:w-2/3 w-full flex-grow-0">
+					<div class="sm:m-6 sm:w-2/3 w-full flex-grow-0">
 						<label>
 							<div>First Name:</div>
 							<input
