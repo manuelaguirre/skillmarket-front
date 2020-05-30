@@ -1,26 +1,28 @@
 <template>
-    <div class="flex-grow flex flex-row flex-wrap overflow-y-scroll">
-        <div class="h-full block content-around w-3/5 flex-wrap py-6 overflow-y-scroll">
+    <div class="h-full container mx-auto flex-grow flex sm:flex-row flex-col overflow-y-scroll">
+        <div class="sm:w-3/5 h-1/2 sm:h-full block py-6 overflow-y-scroll">
             <div class="w-full" v-for="userData of matchesData" :key="userData.id">
                 <div id="profile-card" class="h-64 flex flex-row border-b border-grey-600 p-4 overflow-auto"
                      :class="{ selected: userData.isSelected }"
                      @click.prevent="clickHandler"
                      :data-userid="userData.id">
-                    <div id="image-container" class="rounded-md overflow-hidden h-full w-1/3 mx-auto">
+                    <div id="image-container" class="rounded-md overflow-hidden h-full w-1/2 sm:w-1/3 mx-auto">
                         <img :src="userData.imageUrl" alt="" srcset="" class="object-cover w-full h-full">
                     </div>
-                    <div class="w-2/3 text-left ml-6">
+                    <div class="w-1/2 sm:w-2/3 text-left ml-6">
                         <div id="info-wrapper" class="w-full mb-3">
-                            <div class="flex items-baseline">
+                            <div class="flex flex-col sm:flex-row items-baseline">
+                                <span>
                                 <span id="name" class="text-xl font-bold align-baseline mr-5">{{ userData.name }}</span>
                                 <span id="age" class="text-l align-baseline">{{calculateAge(userData.birthDate)}}</span>
                                 <span class="text-l align-baseline mx-1">·</span>
                                 <span id="gender" class="text-l align-baseline">{{userData.gender}}</span>
-                                <span id="email" class="text-right w-full align-baseline mr-2">{{userData.email}}</span>
+                                </span>
+                                <span id="email" class="text-right w-full align-baseline mx-2">{{userData.email}}</span>
                             </div>
                             <div id="bio">{{ userData.bio }}</div>
                         </div>
-                        <div class="flex flex-row items-end">
+                        <div class="flex flex-col sm:flex-row items-end">
                             <div id="dashboard-container" class="w-full">
                                 <div id="expertises-container" class="">
                                     <h2 class="font-bold">Expertise Areas:</h2>
@@ -51,11 +53,11 @@
                 </div>
             </div>
         </div>
-        <MapComponent class="w-2/5"
-             v-bind:main-location="mainLocation"
-             v-bind:selected-location-id="selectedLocationId"
-             v-bind:secondary-locations="secondaryLocations"
-             v-bind:should-reprocess-secondary-locations="shouldReprocessSecondaryLocations"
+        <MapComponent class="sm:w-2/5 h-1/2 sm:h-full"
+                      v-bind:main-location="mainLocation"
+                      v-bind:selected-location-id="selectedLocationId"
+                      v-bind:secondary-locations="secondaryLocations"
+                      v-bind:should-reprocess-secondary-locations="shouldReprocessSecondaryLocations"
         />
     </div>
 </template>
