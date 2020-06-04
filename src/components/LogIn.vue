@@ -50,19 +50,25 @@ export default {
     props:{},
     data() {
         return {
+            formSent: false,
             email: null,
             password: null,
         };
     },
     methods: {
         async logIn() {
+            if (this.formSent) {
+                return;
+            }
 
             const data = {
                 email: this.email,
                 password: this.password,
             };
 
+            this.formSent = true;
             const successful = await this.$store.dispatch('login', data);
+            this.formSent = false;
             if (successful) {
                 await this.$router.push('/profile');
             }
