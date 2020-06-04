@@ -78,6 +78,7 @@ export default {
     props: {},
     data() {
         return {
+            formSent: false,
             errors: [],
             email: null,
             password: null,
@@ -94,7 +95,7 @@ export default {
             return true;
         },
         async signUp() {
-            if (!this.validatePassword()) {
+            if (this.formSent || !this.validatePassword()) {
                 return;
             }
 
@@ -112,7 +113,9 @@ export default {
                 bio: this.bio,
             };
 
+            this.formSent = true;
             const successful = await this.$store.dispatch('register', data);
+            this.formSent = false;
             if (successful) {
                 await this.$router.push('/profile');
             }
