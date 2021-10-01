@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skillmarket-front-deployment 
+  labels:
+    app: skillmarket-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skillmarket-front
+  template:
+    metadata:
+      labels:
+        app: skillmarket-front
+    spec:
+      containers:
+      - name: skillmarket-front
+        image: skillmarket-front
+        imagePullPolicy: Never
+        env:
+        - name: VUE_APP_API_URL
+          value: http://localhost:61183
+        - name: VUE_APP_API_KEY
+          value: ""
+        ports:
+        - containerPort: 8080

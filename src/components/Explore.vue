@@ -1,5 +1,5 @@
 <template>
-    <Match explore="true"/>
+  <Match :explore="true" />
 </template>
 
 <script>
