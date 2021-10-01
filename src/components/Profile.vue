@@ -245,14 +245,14 @@ export default {
             this.userData.expertises = this.expertisesField ? this.expertisesField.split(',') : [];
         },
         setPosition(position) {
-            console.log(position);
+            this.$log.debug('Profile',position);
             const {latitude, longitude} = position.coords;
             this.userData.location = {latitude, longitude};
             this.gettingLocation = false;
         },
         getPosition() {
             if (!navigator.geolocation) {
-                console.log('Geolocation is not supported by your browser');
+                this.$log.error('Profile','Geolocation is not supported by your browser');
             } else {
                 this.gettingLocation = true;
                 navigator.geolocation.getCurrentPosition(this.setPosition, console.log);
