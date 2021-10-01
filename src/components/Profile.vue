@@ -282,7 +282,14 @@ export default {
             }
             axios.put(`${API_URL}/users/profile`, this.userData,{
                 credentials: 'include',
-            });
+            })
+                .then(() => {
+                    this.errors = [];
+                })
+                .catch(error => {
+                    // eslint-disable-next-line no-useless-escape
+                    this.errors.push(error.response.data.message.replaceAll('\"', '`').split('. '));
+                });
         }
 
     },

@@ -8,9 +8,9 @@ COPY package.json package-lock.json ./
 
 RUN npm install
 
-COPY ./src ./src
-COPY ./public ./public
 COPY .eslintignore *.js ./
+COPY ./public ./public
+COPY ./src ./src
 
 RUN npm run build -- --mode development
 
