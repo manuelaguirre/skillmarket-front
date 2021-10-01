@@ -22,7 +22,7 @@ export default {
         auth_error(state, response) {
             state.status = 'error';
             state.token = '';
-            state.errors = [response];
+            state.errors = [ response ];
         },
         logout(state) {
             state.status = '';
@@ -61,14 +61,14 @@ export default {
             }
             return false;
         },
-        async register({commit}, user) {
+        async register({ commit }, user) {
             commit('auth_request');
 
             // TODO: don't hardcode URLS, and use HTTPS
             try {
                 const response = await axios.post(`${API_URL}/register`, user);
 
-                const {status} = response;
+                const { status } = response;
 
                 if (status === 200) {
                     const token = 'loggedIn';
@@ -79,17 +79,21 @@ export default {
                     throw Error(JSON.stringify(response));
                 }
             } catch (err) {
-                commit('auth_error', err.message);
+                let message = err.message;
+                if (err.response && err.response.data && err.response.data.message) {
+                    message += ': ' + err.response.data.message;
+                }
+                commit('auth_error', message);
                 localStorage.removeItem(LOGGED_IN_TOKEN_KEY);
             }
             return false;
         },
-        async logout({commit}) {
+        async logout({ commit }) {
             // TODO: don't hardcode URLS, and use HTTPS
             try {
                 const response = await axios.post(`${API_URL}/logout`);
 
-                const {status} = response;
+                const { status } = response;
 
                 if (status === 200) {
                     commit('logout');
@@ -103,7 +107,7 @@ export default {
             }
         },
     },
-    getters : {
+    getters: {
         isLoggedIn: state => !!state.token,
         status: state => state.status,
         errors: state => state.errors,

@@ -16,18 +16,18 @@ export default {
     },
     watch: {
         mainLocation: function(value) {
-            console.log(`main location changed = ${JSON.stringify(value)}`);
+            this.$log.debug('MapComponent',`main location changed = ${JSON.stringify(value)}`);
             if (this.google && this.map && value) {
-                console.log('creating main location marker');
+                this.$log.debug('MapComponent','creating main location marker');
                 new this.google.maps.Marker({position: value, map: this.map, label: 'You'});
             }
             this.fitMap();
         },
         selectedLocationId: function (value, oldValue) {
-            console.log(`selected location id changed = ${JSON.stringify(value)}`);
+            this.$log.debug('MapComponent',`selected location id changed = ${JSON.stringify(value)}`);
             if (this.google && this.map && value) {
                 if (oldValue) {
-                    console.log('unselecting previous selected marker');
+                    this.$log.debug('MapComponent','unselecting previous selected marker');
                     const marker = this.markers.get(oldValue);
                     if (marker) {
                         marker.setLabel('');
@@ -40,10 +40,10 @@ export default {
         },
         // TODO: I suspect this could be implemented using VUEX without need for this flag.
         shouldReprocessSecondaryLocations : function(value) {
-            console.log(`settingSecondaryLocations to ${JSON.stringify(value)} ${typeof value}`);
+            this.$log.debug('MapComponent',`settingSecondaryLocations to ${JSON.stringify(value)} ${typeof value}`);
 
             if (this.google && this.map) {
-                console.log('calling secondary markers render');
+                this.$log.debug('MapComponent','calling secondary markers render');
                 this.renderSecondaryMarkers();
                 this.renderSelectedMarker();
             }
@@ -58,7 +58,7 @@ export default {
         };
     },
     async mounted() {
-        console.log('mounted()');
+        this.$log.debug('MapComponent','mounted()');
         try {
             this.google = await gmapsInit();
 
@@ -68,18 +68,18 @@ export default {
             });
 
             if (this.mainLocation) {
-                console.log(`main location exists ${JSON.stringify(this.mainLocation)}`);
+                this.$log.debug('MapComponent',`main location exists ${JSON.stringify(this.mainLocation)}`);
                 if (this.mainMarker) {
-                    console.log(`main marker exists ${JSON.stringify(this.mainMarker)}`);
+                    this.$log.debug('MapComponent',`main marker exists ${JSON.stringify(this.mainMarker)}`);
                     this.mainMarker.setPosition(this.mainLocation);
                 } else {
-                    console.log('creating main marker');
+                    this.$log.debug('MapComponent','creating main marker');
                     this.mainMarker = new this.google.maps.Marker({position: this.mainLocation, map: this.map, label: 'You'});
                 }
             }
 
             if (this.selectedLocationId) {
-                console.log(`selected location exists ${JSON.stringify(this.selectedLocationId)}`);
+                this.$log.debug('MapComponent',`selected location exists ${JSON.stringify(this.selectedLocationId)}`);
             }
 
             this.renderSecondaryMarkers();
@@ -91,26 +91,26 @@ export default {
     },
     methods: {
         renderSecondaryMarkers() {
-            console.log('renderSecondaryMarkers()');
-            console.log(`secondaryLocations = ${JSON.stringify(this.secondaryLocations)}`);
+            this.$log.debug('MapComponent','renderSecondaryMarkers()');
+            this.$log.debug('MapComponent',`secondaryLocations = ${JSON.stringify(this.secondaryLocations)}`);
             if (this.secondaryLocations) {
-                console.log('creating secondary markers');
+                this.$log.debug('MapComponent','creating secondary markers');
                 this.markers = new Map();
                 this.secondaryLocations.forEach((value, key) => {
-                    console.log(`creating marker ${key}`);
+                    this.$log.debug('MapComponent',`creating marker ${key}`);
                     const marker = new this.google.maps.Marker({position: value, map: this.map, opacity: 0.5});
                     this.markers.set(key, marker);
                 });
             }
         },
         renderSelectedMarker() {
-            console.log('renderSelectedMarker()');
-            console.log(`selectedLocationId = ${this.selectedLocationId}`);
+            this.$log.debug('MapComponent','renderSelectedMarker()');
+            this.$log.debug('MapComponent',`selectedLocationId = ${this.selectedLocationId}`);
             if (this.selectedLocationId) {
-                console.log('selecting new marker');
+                this.$log.debug('MapComponent','selecting new marker');
                 const selectedMarker = this.markers.get(this.selectedLocationId);
                 if (selectedMarker) {
-                    console.log('modifying selected marker');
+                    this.$log.debug('MapComponent','modifying selected marker');
                     selectedMarker.setLabel('Selected');
                     selectedMarker.setOpacity(1);
                 }
@@ -118,12 +118,12 @@ export default {
             this.fitMap();
         },
         fitMap() {
-            console.log('fitMap()');
+            this.$log.debug('MapComponent','fitMap()');
             if (this.google && this.secondaryLocations) {
                 const selectedLocation = this.secondaryLocations.get(this.selectedLocationId);
-                console.log(`getting selected location to fit map = ${JSON.stringify(selectedLocation)}`);
+                this.$log.debug('MapComponent',`getting selected location to fit map = ${JSON.stringify(selectedLocation)}`);
                 if (this.mainLocation && selectedLocation) {
-                    console.log('actually fitting map');
+                    this.$log.debug('MapComponent','actually fitting map');
                     const bounds = new this.google.maps.LatLngBounds()
                         .extend(this.mainLocation)
                         .extend(selectedLocation);
